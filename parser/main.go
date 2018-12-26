@@ -7,6 +7,7 @@ import (
 	"log"
 	"parser/config"
 	"parser/database"
+	"parser/scraping"
 )
 
 var (
@@ -32,4 +33,5 @@ func main() {
 		log.Panic(err)
 	}
 
+	scraping.GetProductsURLs()
 }
