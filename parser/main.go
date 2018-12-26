@@ -5,6 +5,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
+	"fmt"
 
 	"parser/config"
 	"parser/database"
@@ -34,5 +35,7 @@ func main() {
 		log.Panic(err)
 	}
 
-	scraping.GetProductsURLs()
+	// scraping.GetProductsURLs()
+	_, err = scraping.ProductListScrape("https://www.auchan.ru/pokupki/eda/bakaleja.html")
+	fmt.Println(err)
 }
