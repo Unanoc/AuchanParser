@@ -3,7 +3,7 @@
 ### Создание базы данных и таблиц PostgreSQL
 Из корневой папки проекта ввести следующие команды:
 ```
-sh parser/scrips/create_db.sh
+sh parser/scripts/create_db.sh
 ```
 
 ### Запуск парсера
@@ -18,5 +18,5 @@ go build server/ && ./server/server
 
 ### Очистка
 ```
-sh parser/scrips/drop_db.sh
+sh parser/scripts/drop_db.sh
 ```
