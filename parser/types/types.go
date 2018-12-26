@@ -39,5 +39,3 @@ type ProductJSON struct {
 	MainProductID       string             `json:"mainProductId"`
 	Products            map[string]Product `json:"products"`
 }
-
-// post
