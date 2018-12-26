@@ -8,7 +8,7 @@ sh parser/scripts/create_db.sh
 
 ### Запуск парсера
 ```
-cd parser && go build . && ./parser --config="config/config.json" && cd ..
+cd parser && sh scripts/create_db.sh && go build . && ./parser --config="config/config.json" && cd ..
 ```
 
 ### Запуск сервера с API
