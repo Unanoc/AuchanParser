@@ -1,0 +1,3 @@
+{
+    "connection": "postgres://testing:testing@localhost:5432/testing"
+}
