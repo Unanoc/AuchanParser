@@ -1,11 +1,5 @@
 # Как использовать
 
-### Создание базы данных и таблиц PostgreSQL
-Из корневой папки проекта ввести следующие команды:
-```
-sh parser/scripts/create_db.sh
-```
-
 ### Запуск парсера
 ```
 cd parser && sh scripts/create_db.sh && go build . && ./parser --config="config/config.json" && cd ..
