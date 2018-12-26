@@ -5,6 +5,7 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
+
 	"parser/config"
 	"parser/database"
 	"parser/scraping"

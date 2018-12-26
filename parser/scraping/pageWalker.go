@@ -1,21 +1,36 @@
 package scraping
 
-import(
+import (
 	"fmt"
+	"regexp"
+
 	"github.com/gocolly/colly"
 )
 
 func GetProductsURLs() {
-	c := colly.NewCollector()
+	// Instantiate default collector
+	c := colly.NewCollector(
+		// Visit only root url and urls which start with "e" or "h" on httpbin.org
+		colly.URLFilters(
+			regexp.MustCompile(`https?://(www.)?auchan\.ru/pokupki/.+`),
+			regexp.MustCompile(`https?://(www.)?auchan\.ru/$`),
+		),
+	)
 
-	// Find and visit all links
-	c.OnHTML("a", func(e *colly.HTMLElement) {
-		e.Request.Visit(e.Attr("href"))
+	// On every a element which has href attribute call callback
+	c.OnHTML("a[href]", func(e *colly.HTMLElement) {
+		link := e.Attr("href")
+		// Print link
+		fmt.Printf("Link found: %q -> %s\n", e.Text, link)
+		// Visit link found on page
+		// Only those links are visited which are matched by  any of the URLFilter regexps
+		c.Visit(e.Request.AbsoluteURL(link))
 	})
 
+	// Before making a request print "Visiting ..."
 	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL)
+		fmt.Println("Visiting", r.URL.String())
 	})
 
-	c.Visit("http://go-colly.org/")
+	c.Visit("https://www.auchan.ru/")
 }
