@@ -10,3 +10,5 @@ type Product struct {
 	ImageURL     string   `json:"image_url"`
 	Category     []string `json:"category"`
 }
+
+type Products []*Product
