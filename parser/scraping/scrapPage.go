@@ -20,7 +20,7 @@ func ProductPagesScrape(url string, conn *pgx.ConnPool) {
 	}
 	defer res.Body.Close()
 	if res.StatusCode != 200 {
-		log.Println("status code error: %d %s", res.StatusCode, res.Status)
+		log.Printf("status code error: %d %s", res.StatusCode, res.Status)
 	}
 
 	body, err := ioutil.ReadAll(res.Body)
@@ -47,6 +47,7 @@ func ProductPagesScrape(url string, conn *pgx.ConnPool) {
 			log.Println(err)
 		}
 		auchanItem := database.AuchanProduct{
+			ProductID: product.ID,
 			URL: product.URL,
 			Name: product.Name,
 			OldPrice: product.OldPrice,
