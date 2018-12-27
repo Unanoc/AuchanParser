@@ -31,5 +31,5 @@ func GetProductsURLs(urlsChan chan string) {
 	})
 
 	c.Visit("https://www.auchan.ru/")
-	fmt.Println("ЗДЕСЬ МОЖНО ЗАКРЫТЬ КАНАЛ!!!")
+	close(urlsChan)
 }
