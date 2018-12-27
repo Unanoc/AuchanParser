@@ -9,6 +9,8 @@ type DB struct {
 	Conn *pgx.ConnPool
 }
 
+var Instance DB
+
 // Connect creates a connection with db.
 func (db *DB) Connect(psqlURI string) error {
 	pgxConfig, err := pgx.ParseURI(psqlURI)

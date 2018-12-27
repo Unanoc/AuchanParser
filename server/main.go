@@ -12,7 +12,6 @@ import (
 	"time"
 	"server/config"
 	"server/database"
-	// "server/handlers"
 	"server/router"
 
 	"github.com/fatih/color"
@@ -45,8 +44,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	db := database.DB{}
-	if err := db.Connect(configInstance.Connection); err != nil {
+	if err := database.Instance.Connect(configInstance.Connection); err != nil {
 		log.Panic(err)
 	}
 
@@ -56,7 +54,7 @@ func main() {
 	go func() {
 		<-syscallChan // goroutine will be frozed at here cause it will be wating until signal is received.
 		log.Println("Shutting down...")
-		db.Disconnect()
+		database.Instance.Disconnect()
 		os.Exit(0)
 	}()
 
