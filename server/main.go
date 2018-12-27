@@ -1,10 +1,18 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
+	"io/ioutil"
+	"os/signal"
+	"flag"
+	"os"
+	"syscall"
+	"time"
 	"server/config"
 	"server/database"
-	"server/handlers"
+	// "server/handlers"
 	"server/router"
 
 	"github.com/fatih/color"
@@ -20,7 +28,7 @@ func loggerHandlerMiddleware(handler fasthttp.RequestHandler) fasthttp.RequestHa
 }
 var (
 	pathToConfig = flag.String("config", "", "Path to configuration JSON file")
-	port = ":8080"
+	port = ":3000"
 )
 
 func main() {
@@ -48,11 +56,11 @@ func main() {
 	go func() {
 		<-syscallChan // goroutine will be frozed at here cause it will be wating until signal is received.
 		log.Println("Shutting down...")
-		database.Disconnect()
+		db.Disconnect()
 		os.Exit(0)
 	}()
 
 	router := router.NewRouter()
-	fmt.Println(color.BlueString("STARTING SERVER AT http://localhost:8080"))
+	fmt.Println(color.BlueString("STARTING SERVER AT http://localhost:3000"))
 	log.Fatal(fasthttp.ListenAndServe(port, loggerHandlerMiddleware(router.Handler)))
 }
