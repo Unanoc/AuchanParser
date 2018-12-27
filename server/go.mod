@@ -1,6 +1,7 @@
 module server
 
 require (
+	github.com/buaazp/fasthttprouter v0.1.1
 	github.com/fatih/color v1.7.0
 	github.com/jackc/pgx v3.3.0+incompatible
 	github.com/mattn/go-colorable v0.0.9 // indirect
