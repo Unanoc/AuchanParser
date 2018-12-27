@@ -5,7 +5,10 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
-	"fmt"
+	"os"
+	"os/signal"
+	"sync"
+	"syscall"
 
 	"parser/config"
 	"parser/database"
@@ -14,6 +17,7 @@ import (
 
 var (
 	pathToConfig = flag.String("config", "", "Path to configuration JSON file")
+	numThreads   = 5
 )
 
 func main() {
@@ -35,7 +39,23 @@ func main() {
 		log.Panic(err)
 	}
 
-	// scraping.GetProductsURLs()
-	_, err = scraping.ProductListScrape("https://www.auchan.ru/pokupki/eda/bakaleja.html")
-	fmt.Println(err)
+	wg := &sync.WaitGroup{}
+	urlsChan := make(chan string, numThreads)
+	for i := 0; i < numThreads; i++ {
+		wg.Add(1)
+		go scraping.Worker(wg, db.Conn, urlsChan)
+	}
+
+	scraping.GetProductsURLs(urlsChan)
+
+	syscallChan := make(chan os.Signal, 1)
+	signal.Notify(syscallChan, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		<-syscallChan
+		log.Println("Shutting down...")
+		db.Disconnect()
+		os.Exit(0)
+	}()
+	wg.Wait()
 }

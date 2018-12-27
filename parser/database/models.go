@@ -6,7 +6,6 @@ type AuchanProduct struct {
 	Name         string
 	OldPrice     int
 	CurrentPrice int
-	Quantity     int
 	ImageURL     string
 	Category     []string
 }
