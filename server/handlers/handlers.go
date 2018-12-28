@@ -78,7 +78,11 @@ func PostProductByIdHandler(ctx *fasthttp.RequestCtx) {
 func GetProductsAllHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetContentType("application/json")
 
-	result, err := database.Instance.GetProductsAllHelper()
+	limit := string(ctx.FormValue("limit"))
+	priceFrom := string(ctx.FormValue("from"))
+	priceTo := string(ctx.FormValue("to"))
+
+	result, err := database.Instance.GetProductsAllHelper(limit, priceFrom, priceTo)
 
 	switch err {
 	case nil:

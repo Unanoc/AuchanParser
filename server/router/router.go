@@ -14,6 +14,5 @@ func NewRouter() *fasthttprouter.Router {
 	router.GET("/api/products/status", handlers.GetProductsStatusHandler) // получение всех продуктов
 	router.POST("/api/products/product/", handlers.PostProductByIdHandler) // создание продукта
 
-
 	return router
 }
