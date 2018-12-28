@@ -3,6 +3,7 @@ package handlers
 import (
 	"server/database"
 	"server/errors"
+	"server/models"
 	"encoding/json"
 	"fmt"
 
@@ -37,6 +38,41 @@ func GetProductByIdHandler(ctx *fasthttp.RequestCtx) {
 		ctx.SetStatusCode(fasthttp.StatusInternalServerError) // 500
 		ctx.SetBodyString(err.Error())
 	}
+}
+
+func PostProductByIdHandler(ctx *fasthttp.RequestCtx) {
+	ctx.SetContentType("application/json")
+
+	product := models.Product{}
+	err := json.Unmarshal(ctx.PostBody(), &product)
+	if err != nil {
+		ctx.SetStatusCode(fasthttp.StatusBadRequest) // 400 Bad Request
+		ctx.SetBodyString(err.Error())
+		return
+	}
+
+	result, err := database.Instance.PostProductByIdHelper(product)
+
+	switch err {
+	case nil:
+		ctx.SetStatusCode(fasthttp.StatusCreated) // 201
+		jsonProduct, err := json.Marshal(result)
+		if err != nil {
+			fmt.Println("handler GetProductByIdHandler:", err)
+		}
+		ctx.SetBody(jsonProduct)
+	case errors.ProdcutIsExist:
+		ctx.SetStatusCode(fasthttp.StatusConflict) // 409
+		jsonProduct, err := json.Marshal(result)
+		if err != nil {
+			fmt.Println("handler GetProductByIdHandler:", err)
+		}
+		ctx.SetBody(jsonProduct)
+	default:
+		ctx.SetStatusCode(fasthttp.StatusInternalServerError) // 500
+		ctx.SetBodyString(err.Error())
+	}
+
 }
 
 func GetProductsAllHandler(ctx *fasthttp.RequestCtx) {

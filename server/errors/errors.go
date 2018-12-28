@@ -24,3 +24,4 @@ func New(msg string) error {
 
 var ProductNotFound = New("Product not found")
 var ProductsNotFound = New("Products not found")
+var ProdcutIsExist = New("Products exist")

@@ -3,6 +3,8 @@ package database
 import (
 	"server/errors"
 	"server/models"
+
+	"github.com/jackc/pgx"
 )
 
 func (db *DB) GetProductByIdHelper(productID string) (*models.Product, error) {
@@ -24,6 +26,44 @@ func (db *DB) GetProductByIdHelper(productID string) (*models.Product, error) {
 
 	if err != nil {
 		return nil, errors.ProductNotFound
+	}
+
+	return &product, nil
+}
+
+func (db *DB) PostProductByIdHelper(product models.Product) (*models.Product, error) {
+
+	rows := db.Conn.QueryRow(`
+		INSERT
+		INTO products ("product_id", "url", "name", "old_price", "current_price", "image_url", "category")
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING "product_id", "url", "name", "old_price", "current_price", "image_url", "category"`,
+		product.ProductID,
+		product.URL,
+		product.Name,
+		product.OldPrice,
+		product.CurrentPrice,
+		product.ImageURL,
+		product.Category,
+	)
+
+	err := rows.Scan(
+		&product.ProductID,
+		&product.URL,
+		&product.Name,
+		&product.OldPrice,
+		&product.CurrentPrice,
+		&product.ImageURL,
+		&product.Category,
+	)
+	if err != nil {
+		switch err.(pgx.PgError).Code {
+		case "23505":
+			existProduct, _ := db.GetProductByIdHelper(product.ProductID)
+			return existProduct, errors.ProdcutIsExist
+		default:
+			return nil, err
+		}
 	}
 
 	return &product, nil
