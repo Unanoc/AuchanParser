@@ -99,3 +99,15 @@ func (db *DB) GetProductsAllHelper() (*models.Products, error) {
 
 	return &products, nil
 }
+
+func (db *DB) GetProductsStatusHelper() (*models.Status, error) {
+	status := models.Status{}
+
+	row := db.Conn.QueryRow(`SELECT COUNT(*) FROM products`)
+	err := row.Scan(&status.ProductsCount)
+	if err != nil {
+		return nil, err
+	}
+
+	return &status, nil
+}

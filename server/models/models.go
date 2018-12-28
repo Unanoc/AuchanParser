@@ -12,3 +12,7 @@ type Product struct {
 }
 
 type Products []*Product
+
+type Status struct {
+	ProductsCount int
+}
