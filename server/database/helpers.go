@@ -74,21 +74,37 @@ func (db *DB) GetProductsAllHelper(limit, priceFrom, priceTo string) (*models.Pr
 	var err error
 	var rows *pgx.Rows
 
-	if (priceFrom != "") && (priceTo != "") {
-		rows, err = db.Conn.Query(`
-		SELECT "product_id", "url", "name", "old_price", "current_price", "image_url", "category"
-		FROM products
-		WHERE current_price BETWEEN $1 AND $2
-		ORDER BY "current_price"
-		LIMIT $3`,
-		priceFrom, priceTo, limit)
+	if limit != "" {
+		if (priceFrom != "") && (priceTo != "") {
+			rows, err = db.Conn.Query(`
+			SELECT "product_id", "url", "name", "old_price", "current_price", "image_url", "category"
+			FROM products
+			WHERE current_price BETWEEN $1 AND $2
+			ORDER BY "current_price"
+			LIMIT $3`,
+			priceFrom, priceTo, limit)
+		} else {
+			rows, err = db.Conn.Query(`
+			SELECT "product_id", "url", "name", "old_price", "current_price", "image_url", "category"
+			FROM products
+			ORDER BY "current_price"
+			LIMIT $1`,
+			limit)
+		}
 	} else {
-		rows, err = db.Conn.Query(`
-		SELECT "product_id", "url", "name", "old_price", "current_price", "image_url", "category"
-		FROM products
-		ORDER BY "current_price"
-		LIMIT $1`,
-		limit)
+		if (priceFrom != "") && (priceTo != "") {
+			rows, err = db.Conn.Query(`
+			SELECT "product_id", "url", "name", "old_price", "current_price", "image_url", "category"
+			FROM products
+			WHERE current_price BETWEEN $1 AND $2
+			ORDER BY "current_price"`,
+			priceFrom, priceTo)
+		} else {
+			rows, err = db.Conn.Query(`
+			SELECT "product_id", "url", "name", "old_price", "current_price", "image_url", "category"
+			FROM products
+			ORDER BY "current_price"`)
+		}
 	}
 
 	if err != nil {
